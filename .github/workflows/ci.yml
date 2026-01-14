@@ -23,7 +23,9 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          rm -rf example  # isar-community.dev 서버 의존성 회피
+          flutter pub get
 
       - name: Dart analyze
         run: dart analyze
@@ -76,7 +78,9 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          rm -rf example  # isar-community.dev 서버 의존성 회피
+          flutter pub get
 
       - name: Run tests
         run: flutter test
