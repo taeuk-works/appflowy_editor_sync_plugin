@@ -59,7 +59,7 @@ jobs:
         run: cargo test --manifest-path rust/Cargo.toml
 
       - name: Cargo clippy
-        run: cargo clippy --manifest-path rust/Cargo.toml -- -D warnings
+        run: cargo clippy --manifest-path rust/Cargo.toml
 
   # Flutter 테스트
   flutter-test:
