@@ -2,6 +2,7 @@
 
 /// Constants for document structure
 pub const BLOCKS: &str = "blocks";
+pub const META: &str = "meta";
 pub const ROOT_ID: &str = "document";
 pub const ROOT_TYPE: &str = "page";
 pub const ATTRIBUTES: &str = "attributes";

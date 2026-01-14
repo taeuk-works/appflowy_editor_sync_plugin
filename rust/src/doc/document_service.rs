@@ -1,11 +1,12 @@
 use flutter_rust_bridge::{frb, DartFnFuture};
 use log::{error, info};
-use yrs::{merge_updates_v2, Doc, Map, ReadTxn, Transact};
+use serde_json::{json, Value as JsonValue};
+use yrs::{merge_updates_v2, Array, Doc, Map, ReadTxn, Transact};
 
 use super::error::DocError;
 use super::operations::{block_ops::BlockOperations, delta_ops::DeltaOperations, update_ops::UpdateOperations};
 
-use crate::doc::constants::{BLOCKS, DEFAULT_PARENT, ROOT_ID};
+use crate::doc::constants::{BLOCKS, DEFAULT_PARENT, META, ROOT_ID};
 use crate::doc::document_types::{BlockActionDoc, BlockActionTypeDoc, CustomRustError, DocumentState, FailedToDecodeUpdates};
 use crate::doc::utils::util::MapExt;
 use crate::{log_info, log_error};
@@ -165,7 +166,7 @@ pub fn apply_action(
     /// Setting a root node id in the root map
     pub fn set_root_node_id(&mut self, id: String) -> Result<Vec<u8>, CustomRustError> {
         log_info!("set_root_node_id: Setting root node id to {}", id);
-        
+
         let doc = &self.doc;
         let root = doc.get_or_insert_map(ROOT_ID);
         let mut txn = doc.transact_mut();
@@ -179,5 +180,338 @@ pub fn apply_action(
         Ok(update)
     }
 
+    // ============================================
+    // Meta API - YDoc 메타데이터 조작
+    // ============================================
 
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터에 문자열 값 설정
+    ///
+    /// [key] 메타데이터 키
+    /// [value] 설정할 문자열 값
+    pub fn set_meta_string(&mut self, key: String, value: String) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("set_meta_string: key={}, value={}", key, value);
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        meta.insert(&mut txn, key.clone(), value);
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("set_meta_string: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터 키 제거
+    ///
+    /// [key] 제거할 메타데이터 키
+    pub fn remove_meta_key(&mut self, key: String) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("remove_meta_key: key={}", key);
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        meta.remove(&mut txn, &key);
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("remove_meta_key: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터에 정수 값 설정
+    ///
+    /// [key] 메타데이터 키
+    /// [value] 설정할 정수 값
+    pub fn set_meta_int(&mut self, key: String, value: i64) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("set_meta_int: key={}, value={}", key, value);
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        meta.insert(&mut txn, key.clone(), value);
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("set_meta_int: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터에 불리언 값 설정
+    ///
+    /// [key] 메타데이터 키
+    /// [value] 설정할 불리언 값
+    pub fn set_meta_bool(&mut self, key: String, value: bool) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("set_meta_bool: key={}, value={}", key, value);
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        meta.insert(&mut txn, key.clone(), value);
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("set_meta_bool: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터에 문자열 배열 설정 (기존 배열 전체 교체)
+    ///
+    /// [key] 메타데이터 키
+    /// [values] 설정할 문자열 배열
+    pub fn set_meta_string_array(&mut self, key: String, values: Vec<String>) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("set_meta_string_array: key={}, count={}", key, values.len());
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        // 기존 배열이 있으면 제거하고 새로 생성
+        meta.remove(&mut txn, &key);
+        let array = meta.get_or_init_array(&mut txn, key.clone());
+
+        for value in values {
+            array.push_back(&mut txn, value);
+        }
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("set_meta_string_array: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터 배열에 문자열 항목 추가 (중복 체크)
+    ///
+    /// [key] 메타데이터 키
+    /// [value] 추가할 문자열 값
+    pub fn push_meta_array_item(&mut self, key: String, value: String) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("push_meta_array_item: key={}, value={}", key, value);
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+        let array = meta.get_or_init_array(&mut txn, key.clone());
+
+        // 중복 체크
+        let exists = array.iter(&txn).any(|v| {
+            if let yrs::Value::Any(yrs::Any::String(s)) = v {
+                s.as_ref() == value.as_str()
+            } else {
+                false
+            }
+        });
+
+        if !exists {
+            array.push_back(&mut txn, value.clone());
+        }
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("push_meta_array_item: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 메타데이터 배열에서 문자열 항목 제거
+    ///
+    /// [key] 메타데이터 키
+    /// [value] 제거할 문자열 값
+    pub fn remove_meta_array_item(&mut self, key: String, value: String) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("remove_meta_array_item: key={}, value={}", key, value);
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        if let Some(yrs::Value::YArray(array)) = meta.get(&txn, &key) {
+            // 제거할 인덱스 찾기
+            let mut index_to_remove: Option<u32> = None;
+            for (i, v) in array.iter(&txn).enumerate() {
+                if let yrs::Value::Any(yrs::Any::String(s)) = v {
+                    if s.as_ref() == value.as_str() {
+                        index_to_remove = Some(i as u32);
+                        break;
+                    }
+                }
+            }
+
+            if let Some(index) = index_to_remove {
+                array.remove(&mut txn, index);
+            }
+        }
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("remove_meta_array_item: Finished for key={}", key);
+        Ok(update)
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 모든 메타데이터를 JSON 문자열로 반환
+    ///
+    /// 반환: JSON 형식의 메타데이터 (예: {"title": "노트", "color": 123, "status": "active"})
+    pub fn get_all_meta(&self) -> Result<String, CustomRustError> {
+        log_info!("get_all_meta: Starting");
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let txn = doc.transact();
+
+        let mut result = serde_json::Map::new();
+
+        if let Some(yrs::Value::YMap(meta)) = root.get(&txn, META) {
+            for (key, value) in meta.iter(&txn) {
+                let json_value = Self::yrs_value_to_json(&txn, value);
+                result.insert(key.to_string(), json_value);
+            }
+        }
+
+        let json_str = serde_json::to_string(&JsonValue::Object(result))
+            .map_err(|e| DocError::EncodingError(format!("JSON serialization failed: {}", e)))?;
+
+        log_info!("get_all_meta: Finished");
+        Ok(json_str)
+    }
+
+    /// yrs::Value를 serde_json::Value로 변환
+    fn yrs_value_to_json<T: ReadTxn>(txn: &T, value: yrs::Value) -> JsonValue {
+        match value {
+            yrs::Value::Any(any) => Self::yrs_any_to_json(any),
+            yrs::Value::YArray(array) => {
+                let items: Vec<JsonValue> = array.iter(txn)
+                    .map(|v| Self::yrs_value_to_json(txn, v))
+                    .collect();
+                JsonValue::Array(items)
+            }
+            yrs::Value::YMap(map) => {
+                let mut obj = serde_json::Map::new();
+                for (k, v) in map.iter(txn) {
+                    obj.insert(k.to_string(), Self::yrs_value_to_json(txn, v));
+                }
+                JsonValue::Object(obj)
+            }
+            _ => JsonValue::Null,
+        }
+    }
+
+    /// yrs::Any를 serde_json::Value로 변환
+    fn yrs_any_to_json(any: yrs::Any) -> JsonValue {
+        match any {
+            yrs::Any::Null => JsonValue::Null,
+            yrs::Any::Undefined => JsonValue::Null,
+            yrs::Any::Bool(b) => JsonValue::Bool(b),
+            yrs::Any::Number(n) => json!(n),
+            yrs::Any::BigInt(n) => json!(n),
+            yrs::Any::String(s) => JsonValue::String(s.to_string()),
+            yrs::Any::Array(arr) => {
+                let items: Vec<JsonValue> = arr.iter()
+                    .map(|v| Self::yrs_any_to_json(v.clone()))
+                    .collect();
+                JsonValue::Array(items)
+            }
+            yrs::Any::Map(map) => {
+                let mut obj = serde_json::Map::new();
+                for (k, v) in map.iter() {
+                    obj.insert(k.clone(), Self::yrs_any_to_json(v.clone()));
+                }
+                JsonValue::Object(obj)
+            }
+            yrs::Any::Buffer(buf) => {
+                // Base64 인코딩 또는 배열로 변환
+                JsonValue::Array(buf.iter().map(|b| json!(*b)).collect())
+            }
+        }
+    }
+
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    /// 여러 메타데이터 필드를 한 번에 설정 (JSON 입력)
+    ///
+    /// [json_str] 설정할 메타데이터 JSON (예: {"title": "노트", "status": "active"})
+    ///
+    /// 지원 타입: string, number (int/double), boolean, string array
+    pub fn set_meta_from_json(&mut self, json_str: String) -> Result<Vec<u8>, CustomRustError> {
+        log_info!("set_meta_from_json: {}", json_str);
+
+        let json: JsonValue = serde_json::from_str(&json_str)
+            .map_err(|e| DocError::EncodingError(format!("JSON parse failed: {}", e)))?;
+
+        let obj = json.as_object()
+            .ok_or_else(|| DocError::InvalidOperation("Expected JSON object".into()))?;
+
+        let doc = &self.doc;
+        let root = doc.get_or_insert_map(ROOT_ID);
+        let mut txn = doc.transact_mut();
+        let meta = root.get_or_init_map(&mut txn, META);
+
+        for (key, value) in obj {
+            match value {
+                JsonValue::Null => { meta.remove(&mut txn, key); }
+                JsonValue::Bool(b) => { meta.insert(&mut txn, key.clone(), *b); }
+                JsonValue::Number(n) => {
+                    if let Some(i) = n.as_i64() {
+                        meta.insert(&mut txn, key.clone(), i);
+                    } else if let Some(f) = n.as_f64() {
+                        meta.insert(&mut txn, key.clone(), f);
+                    }
+                }
+                JsonValue::String(s) => { meta.insert(&mut txn, key.clone(), s.clone()); }
+                JsonValue::Array(arr) => {
+                    // 문자열 배열로 가정
+                    meta.remove(&mut txn, key);
+                    let array = meta.get_or_init_array(&mut txn, key.clone());
+                    for item in arr {
+                        if let JsonValue::String(s) = item {
+                            array.push_back(&mut txn, s.clone());
+                        }
+                    }
+                }
+                JsonValue::Object(_) => {
+                    // 중첩 객체는 JSON 문자열로 저장
+                    let nested_json = serde_json::to_string(value)
+                        .map_err(|e| DocError::EncodingError(format!("JSON serialize failed: {}", e)))?;
+                    meta.insert(&mut txn, key.clone(), nested_json);
+                }
+            }
+        }
+
+        let before_state = txn.before_state();
+        let update = txn.encode_diff_v2(before_state);
+        log_info!("set_meta_from_json: Finished");
+        Ok(update)
+    }
 }
