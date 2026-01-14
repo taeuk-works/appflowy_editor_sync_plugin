@@ -11,7 +11,6 @@ part of 'document_types.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$BlockActionDoc {
 
@@ -22,8 +21,6 @@ mixin _$BlockActionDoc {
 @pragma('vm:prefer-inline')
 $BlockActionDocCopyWith<BlockActionDoc> get copyWith => _$BlockActionDocCopyWithImpl<BlockActionDoc>(this as BlockActionDoc, _$identity);
 
-  /// Serializes this BlockActionDoc to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -31,7 +28,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is BlockActionDoc&&(identical(other.action, action) || other.action == action)&&(identical(other.block, block) || other.block == block)&&const DeepCollectionEquality().equals(other.path, path)&&const DeepCollectionEquality().equals(other.oldPath, oldPath));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,action,block,const DeepCollectionEquality().hash(path),const DeepCollectionEquality().hash(oldPath));
 
@@ -212,11 +209,11 @@ return $default(_that.action,_that.block,_that.path,_that.oldPath);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
+
 
 class _BlockActionDoc implements BlockActionDoc {
   const _BlockActionDoc({required this.action, required this.block, required this.path, this.oldPath});
-  factory _BlockActionDoc.fromJson(Map<String, dynamic> json) => _$BlockActionDocFromJson(json);
+  
 
 @override final  BlockActionTypeDoc action;
 @override final  BlockDoc block;
@@ -229,17 +226,14 @@ class _BlockActionDoc implements BlockActionDoc {
 @pragma('vm:prefer-inline')
 _$BlockActionDocCopyWith<_BlockActionDoc> get copyWith => __$BlockActionDocCopyWithImpl<_BlockActionDoc>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$BlockActionDocToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _BlockActionDoc&&(identical(other.action, action) || other.action == action)&&(identical(other.block, block) || other.block == block)&&const DeepCollectionEquality().equals(other.path, path)&&const DeepCollectionEquality().equals(other.oldPath, oldPath));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,action,block,const DeepCollectionEquality().hash(path),const DeepCollectionEquality().hash(oldPath));
 
@@ -295,7 +289,6 @@ $BlockDocCopyWith<$Res> get block {
 }
 }
 
-
 /// @nodoc
 mixin _$BlockDoc {
 
@@ -306,8 +299,6 @@ mixin _$BlockDoc {
 @pragma('vm:prefer-inline')
 $BlockDocCopyWith<BlockDoc> get copyWith => _$BlockDocCopyWithImpl<BlockDoc>(this as BlockDoc, _$identity);
 
-  /// Serializes this BlockDoc to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -315,7 +306,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is BlockDoc&&(identical(other.id, id) || other.id == id)&&(identical(other.ty, ty) || other.ty == ty)&&const DeepCollectionEquality().equals(other.attributes, attributes)&&(identical(other.delta, delta) || other.delta == delta)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.prevId, prevId) || other.prevId == prevId)&&(identical(other.nextId, nextId) || other.nextId == nextId)&&(identical(other.oldParentId, oldParentId) || other.oldParentId == oldParentId));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,ty,const DeepCollectionEquality().hash(attributes),delta,parentId,prevId,nextId,oldParentId);
 
@@ -491,11 +482,11 @@ return $default(_that.id,_that.ty,_that.attributes,_that.delta,_that.parentId,_t
 }
 
 /// @nodoc
-@JsonSerializable()
+
 
 class _BlockDoc implements BlockDoc {
   const _BlockDoc({required this.id, required this.ty, required final  Map<String, String> attributes, this.delta, this.parentId, this.prevId, this.nextId, this.oldParentId}): _attributes = attributes;
-  factory _BlockDoc.fromJson(Map<String, dynamic> json) => _$BlockDocFromJson(json);
+  
 
 @override final  String id;
 @override final  String ty;
@@ -518,17 +509,14 @@ class _BlockDoc implements BlockDoc {
 @pragma('vm:prefer-inline')
 _$BlockDocCopyWith<_BlockDoc> get copyWith => __$BlockDocCopyWithImpl<_BlockDoc>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$BlockDocToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _BlockDoc&&(identical(other.id, id) || other.id == id)&&(identical(other.ty, ty) || other.ty == ty)&&const DeepCollectionEquality().equals(other._attributes, _attributes)&&(identical(other.delta, delta) || other.delta == delta)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.prevId, prevId) || other.prevId == prevId)&&(identical(other.nextId, nextId) || other.nextId == nextId)&&(identical(other.oldParentId, oldParentId) || other.oldParentId == oldParentId));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,ty,const DeepCollectionEquality().hash(_attributes),delta,parentId,prevId,nextId,oldParentId);
 
@@ -579,7 +567,6 @@ as String?,
 
 }
 
-
 /// @nodoc
 mixin _$DocumentState {
 
@@ -590,8 +577,6 @@ mixin _$DocumentState {
 @pragma('vm:prefer-inline')
 $DocumentStateCopyWith<DocumentState> get copyWith => _$DocumentStateCopyWithImpl<DocumentState>(this as DocumentState, _$identity);
 
-  /// Serializes this DocumentState to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -599,7 +584,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is DocumentState&&(identical(other.docId, docId) || other.docId == docId)&&const DeepCollectionEquality().equals(other.blocks, blocks)&&const DeepCollectionEquality().equals(other.childrenMap, childrenMap)&&(identical(other.rootId, rootId) || other.rootId == rootId));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,docId,const DeepCollectionEquality().hash(blocks),const DeepCollectionEquality().hash(childrenMap),rootId);
 
@@ -771,11 +756,11 @@ return $default(_that.docId,_that.blocks,_that.childrenMap,_that.rootId);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
+
 
 class _DocumentState implements DocumentState {
   const _DocumentState({required this.docId, required final  Map<String, BlockDoc> blocks, required final  Map<String, List<String>> childrenMap, required this.rootId}): _blocks = blocks,_childrenMap = childrenMap;
-  factory _DocumentState.fromJson(Map<String, dynamic> json) => _$DocumentStateFromJson(json);
+  
 
 @override final  String docId;
  final  Map<String, BlockDoc> _blocks;
@@ -800,17 +785,14 @@ class _DocumentState implements DocumentState {
 @pragma('vm:prefer-inline')
 _$DocumentStateCopyWith<_DocumentState> get copyWith => __$DocumentStateCopyWithImpl<_DocumentState>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$DocumentStateToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _DocumentState&&(identical(other.docId, docId) || other.docId == docId)&&const DeepCollectionEquality().equals(other._blocks, _blocks)&&const DeepCollectionEquality().equals(other._childrenMap, _childrenMap)&&(identical(other.rootId, rootId) || other.rootId == rootId));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,docId,const DeepCollectionEquality().hash(_blocks),const DeepCollectionEquality().hash(_childrenMap),rootId);
 
@@ -857,7 +839,6 @@ as String,
 
 }
 
-
 /// @nodoc
 mixin _$FailedToDecodeUpdates {
 
@@ -868,8 +849,6 @@ mixin _$FailedToDecodeUpdates {
 @pragma('vm:prefer-inline')
 $FailedToDecodeUpdatesCopyWith<FailedToDecodeUpdates> get copyWith => _$FailedToDecodeUpdatesCopyWithImpl<FailedToDecodeUpdates>(this as FailedToDecodeUpdates, _$identity);
 
-  /// Serializes this FailedToDecodeUpdates to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -877,7 +856,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is FailedToDecodeUpdates&&const DeepCollectionEquality().equals(other.failedUpdatesIds, failedUpdatesIds));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(failedUpdatesIds));
 
@@ -1046,11 +1025,11 @@ return $default(_that.failedUpdatesIds);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
+
 
 class _FailedToDecodeUpdates implements FailedToDecodeUpdates {
   const _FailedToDecodeUpdates({required final  List<String> failedUpdatesIds}): _failedUpdatesIds = failedUpdatesIds;
-  factory _FailedToDecodeUpdates.fromJson(Map<String, dynamic> json) => _$FailedToDecodeUpdatesFromJson(json);
+  
 
  final  List<String> _failedUpdatesIds;
 @override List<String> get failedUpdatesIds {
@@ -1066,17 +1045,14 @@ class _FailedToDecodeUpdates implements FailedToDecodeUpdates {
 @pragma('vm:prefer-inline')
 _$FailedToDecodeUpdatesCopyWith<_FailedToDecodeUpdates> get copyWith => __$FailedToDecodeUpdatesCopyWithImpl<_FailedToDecodeUpdates>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$FailedToDecodeUpdatesToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _FailedToDecodeUpdates&&const DeepCollectionEquality().equals(other._failedUpdatesIds, _failedUpdatesIds));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_failedUpdatesIds));
 

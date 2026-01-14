@@ -7,7 +7,6 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'document_types.freezed.dart';
-part 'document_types.g.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`
 
@@ -19,9 +18,6 @@ sealed class BlockActionDoc with _$BlockActionDoc {
     required Uint32List path,
     Uint32List? oldPath,
   }) = _BlockActionDoc;
-
-  factory BlockActionDoc.fromJson(Map<String, dynamic> json) =>
-      _$BlockActionDocFromJson(json);
 }
 
 enum BlockActionTypeDoc { insert, update, delete, move }
@@ -38,9 +34,6 @@ sealed class BlockDoc with _$BlockDoc {
     String? nextId,
     String? oldParentId,
   }) = _BlockDoc;
-
-  factory BlockDoc.fromJson(Map<String, dynamic> json) =>
-      _$BlockDocFromJson(json);
 }
 
 class CustomRustError implements FrbException {
@@ -73,9 +66,6 @@ sealed class DocumentState with _$DocumentState {
     required Map<String, List<String>> childrenMap,
     required String rootId,
   }) = _DocumentState;
-
-  factory DocumentState.fromJson(Map<String, dynamic> json) =>
-      _$DocumentStateFromJson(json);
 }
 
 @freezed
@@ -83,7 +73,4 @@ sealed class FailedToDecodeUpdates with _$FailedToDecodeUpdates {
   const factory FailedToDecodeUpdates({
     required List<String> failedUpdatesIds,
   }) = _FailedToDecodeUpdates;
-
-  factory FailedToDecodeUpdates.fromJson(Map<String, dynamic> json) =>
-      _$FailedToDecodeUpdatesFromJson(json);
 }
