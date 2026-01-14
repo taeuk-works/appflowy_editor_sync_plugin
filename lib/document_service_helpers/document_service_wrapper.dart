@@ -104,6 +104,18 @@ class DocumentServiceWrapper {
     }
   }
 
+  /// 현재 문서의 전체 상태를 인코딩하여 반환
+  Future<Uint8List> encodeFullState() async {
+    try {
+      await _mutex.acquire();
+      return await _rustService.encodeFullState();
+    } catch (e) {
+      throw Exception('Failed to encode full state: $e');
+    } finally {
+      _mutex.release();
+    }
+  }
+
   //Write override for mergeUpdates
   Future<Uint8List> mergeUpdates(List<Uint8List> updates) async {
     //There is no need to acquire the mutex lock here. Because it doesn't use the editor at all.

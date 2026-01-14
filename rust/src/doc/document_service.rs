@@ -52,6 +52,18 @@ impl DocumentService {
         Ok(update)
     }
 
+    /// 현재 문서의 전체 상태를 인코딩하여 반환
+    #[no_mangle]
+    #[inline(never)]
+    #[frb]
+    pub fn encode_full_state(&self) -> Result<Vec<u8>, CustomRustError> {
+        let doc = &self.doc;
+        let txn = doc.transact();
+        let empty_state = yrs::StateVector::default();
+        let update = txn.encode_state_as_update_v2(&empty_state);
+        Ok(update)
+    }
+
     #[no_mangle]
 #[inline(never)]
 #[frb]
@@ -113,16 +125,34 @@ pub fn apply_action(
     #[frb]
     pub fn apply_updates(&mut self, updates: Vec<Vec<u8>>) -> Result<(), CustomRustError> {
         log_info!("apply_updates: Starting with {} updates for doc_id: {}", updates.len(), self.doc_id);
-        
+
         // Create a new document to apply updates to
         let new_doc = Doc::new();
-        
+
         // Apply updates to the new document
         let result = UpdateOperations::apply_updates_inner(new_doc.clone(), &self.doc_id, updates)?;
-        
+
         // Replace the current document with the new one
         self.doc = new_doc;
-        
+
+        // Debug: Check root map structure after update
+        {
+            let txn = self.doc.transact();
+            if let Some(root) = txn.get_map(ROOT_ID) {
+                let keys: Vec<String> = root.keys(&txn).map(|k| k.to_string()).collect();
+                log_info!("apply_updates: root keys after update = {:?}", keys);
+
+                if let Some(yrs::Value::YMap(meta)) = root.get(&txn, META) {
+                    let meta_keys: Vec<String> = meta.keys(&txn).map(|k| k.to_string()).collect();
+                    log_info!("apply_updates: meta keys = {:?}", meta_keys);
+                } else {
+                    log_info!("apply_updates: META map not found in root!");
+                }
+            } else {
+                log_info!("apply_updates: ROOT map not found!");
+            }
+        }
+
         log_info!("apply_updates: Successfully applied updates for doc_id: {}", self.doc_id);
         Ok(result)
     }
@@ -513,5 +543,56 @@ pub fn apply_action(
         let update = txn.encode_diff_v2(before_state);
         log_info!("set_meta_from_json: Finished");
         Ok(update)
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_meta_save_and_load() {
+        // 첫 번째 DocumentService에서 메타 저장
+        let mut doc_service1 = DocumentService::new();
+        doc_service1.init_empty_doc().unwrap();
+
+        let meta_json = r#"{"title":"테스트 노트","color":4294924083,"status":"pinned","labelIds":["label1","label2"]}"#;
+        let update = doc_service1.set_meta_from_json(meta_json.to_string()).unwrap();
+
+        println!("Update size: {} bytes", update.len());
+
+        // 메타데이터 로드
+        let loaded_meta = doc_service1.get_all_meta().unwrap();
+        println!("Loaded meta: {}", loaded_meta);
+
+        assert!(loaded_meta.contains("테스트 노트"));
+        assert!(loaded_meta.contains("pinned"));
+    }
+
+    #[test]
+    fn test_meta_persistence_via_update() {
+        // 첫 번째 DocumentService에서 메타 저장
+        let mut doc_service1 = DocumentService::new();
+        let init_update = doc_service1.init_empty_doc().unwrap();
+        println!("Init update size: {} bytes", init_update.len());
+
+        let meta_json = r#"{"title":"지속성 테스트","color":4289449455,"status":"pinned","labelIds":["persist-label"]}"#;
+        let meta_update = doc_service1.set_meta_from_json(meta_json.to_string()).unwrap();
+        println!("Meta update size: {} bytes", meta_update.len());
+
+        // 전체 상태를 가져오기 (encode_state_as_update_v2)
+        let full_state = doc_service1.encode_full_state().unwrap();
+        println!("Full state size: {} bytes", full_state.len());
+
+        // 두 번째 DocumentService에서 전체 상태 적용 후 로드
+        let mut doc_service2 = DocumentService::new();
+        // init_empty_doc을 호출하지 않고 바로 update 적용
+        doc_service2.apply_updates(vec![full_state]).unwrap();
+
+        let loaded_meta = doc_service2.get_all_meta().unwrap();
+        println!("Loaded meta from doc2: {}", loaded_meta);
+
+        assert!(loaded_meta.contains("지속성 테스트"), "title should be present");
+        assert!(loaded_meta.contains("pinned"), "status should be present");
+        assert!(loaded_meta.contains("persist-label"), "labelIds should be present");
     }
 }

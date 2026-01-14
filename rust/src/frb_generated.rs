@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1822480721;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1752453603;
 
 // Section: executor
 
@@ -151,6 +151,60 @@ fn wire__crate__doc__document_service__DocumentService_apply_updates_impl(
                             crate::doc::document_service::DocumentService::apply_updates(
                                 &mut *api_that_guard,
                                 api_updates,
+                            )?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__doc__document_service__DocumentService_encode_full_state_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DocumentService_encode_full_state",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DocumentService>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::doc::document_types::CustomRustError>(
+                    (move || {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::doc::document_service::DocumentService::encode_full_state(
+                                &*api_that_guard,
                             )?;
                         Ok(output_ok)
                     })(),
@@ -1334,91 +1388,97 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__doc__document_service__DocumentService_get_all_meta_impl(
+        3 => wire__crate__doc__document_service__DocumentService_encode_full_state_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__doc__document_service__DocumentService_get_document_state_impl(
+        4 => wire__crate__doc__document_service__DocumentService_get_all_meta_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__doc__document_service__DocumentService_init_empty_doc_impl(
+        5 => wire__crate__doc__document_service__DocumentService_get_document_state_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__doc__document_service__DocumentService_merge_updates_impl(
+        6 => wire__crate__doc__document_service__DocumentService_init_empty_doc_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__doc__document_service__DocumentService_new_impl(
+        7 => wire__crate__doc__document_service__DocumentService_merge_updates_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__doc__document_service__DocumentService_push_meta_array_item_impl(
+        8 => wire__crate__doc__document_service__DocumentService_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__doc__document_service__DocumentService_remove_meta_array_item_impl(
+        9 => wire__crate__doc__document_service__DocumentService_push_meta_array_item_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__doc__document_service__DocumentService_remove_meta_key_impl(
+        10 => wire__crate__doc__document_service__DocumentService_remove_meta_array_item_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__doc__document_service__DocumentService_set_meta_bool_impl(
+        11 => wire__crate__doc__document_service__DocumentService_remove_meta_key_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__doc__document_service__DocumentService_set_meta_from_json_impl(
+        12 => wire__crate__doc__document_service__DocumentService_set_meta_bool_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__doc__document_service__DocumentService_set_meta_int_impl(
+        13 => wire__crate__doc__document_service__DocumentService_set_meta_from_json_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__doc__document_service__DocumentService_set_meta_string_impl(
+        14 => wire__crate__doc__document_service__DocumentService_set_meta_int_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__doc__document_service__DocumentService_set_meta_string_array_impl(
+        15 => wire__crate__doc__document_service__DocumentService_set_meta_string_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__doc__document_service__DocumentService_set_root_node_id_impl(
+        16 => wire__crate__doc__document_service__DocumentService_set_meta_string_array_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__doc__document_types__custom_rust_error_new_impl(
+        17 => wire__crate__doc__document_service__DocumentService_set_root_node_id_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        18 => wire__crate__doc__document_types__custom_rust_error_new_impl(
             port,
             ptr,
             rust_vec_len,

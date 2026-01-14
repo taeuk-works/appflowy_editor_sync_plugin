@@ -24,24 +24,47 @@ impl UpdateOperations {
 
         // Extract just the binary updates
         let updates_only = updates;
-        
+
         // Merge all the updates together
         let merged_update = merge_updates_v2(updates_only)
             .map_err(|e| DocError::MergeError(format!("Failed to merge updates: {}", e)))?;
-        
+
+        log_info!("apply_updates: Merged update size = {} bytes", merged_update.len());
+
         // Apply the merged update to the document
-        let mut txn = doc.transact_mut();
-        
-        match Update::decode_v2(&merged_update) {
-            Ok(decoded_update) => {
-                log_info!("apply_updates: Applying update for doc_id: {}", doc_id);
-                txn.apply_update(decoded_update);
-            },
-            Err(e) => {
-                log_error!("Failed to decode update for doc_id: {}: {}", doc_id, e);
-                return Err(DocError::UpdateDecodingFailed(format!("Failed to decode update: {}", e)).into());
+        {
+            let mut txn = doc.transact_mut();
+
+            match Update::decode_v2(&merged_update) {
+                Ok(decoded_update) => {
+                    log_info!("apply_updates: Applying update for doc_id: {}", doc_id);
+                    match txn.apply_update(decoded_update) {
+                        Ok(_) => {
+                            log_info!("apply_updates: Update applied successfully for doc_id: {}", doc_id);
+                        },
+                        Err(e) => {
+                            log_error!("apply_updates: Failed to apply update for doc_id: {}: {:?}", doc_id, e);
+                        }
+                    }
+                },
+                Err(e) => {
+                    log_error!("Failed to decode update for doc_id: {}: {}", doc_id, e);
+                    return Err(DocError::UpdateDecodingFailed(format!("Failed to decode update: {}", e)).into());
+                }
+            };
+            // txn is committed when dropped here
+        }
+
+        // Debug: verify update was applied
+        {
+            let txn = doc.transact();
+            if let Some(yrs::Value::YMap(root)) = txn.get_map(ROOT_ID).map(|m| yrs::Value::YMap(m)) {
+                let keys: Vec<String> = root.keys(&txn).map(|k| k.to_string()).collect();
+                log_info!("apply_updates_inner: root keys after commit = {:?}", keys);
+            } else {
+                log_info!("apply_updates_inner: ROOT map not found after update!");
             }
-        };
+        }
 
         log_info!("apply_updates: Finished for doc_id: {}", doc_id);
         Ok(())

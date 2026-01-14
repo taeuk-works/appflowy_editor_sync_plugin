@@ -15,6 +15,9 @@ abstract class DocumentService implements RustOpaqueInterface {
 
   Future<void> applyUpdates({required List<Uint8List> updates});
 
+  /// 현재 문서의 전체 상태를 인코딩하여 반환
+  Future<Uint8List> encodeFullState();
+
   /// 모든 메타데이터를 JSON 문자열로 반환
   ///
   /// 반환: JSON 형식의 메타데이터 (예: {"title": "노트", "color": 123, "status": "active"})
