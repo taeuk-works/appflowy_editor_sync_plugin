@@ -85,11 +85,15 @@ mod tests {
             "Blocks not grouped by device and sorted by timestamp");
 
         // Test after moving SXTmU4 to first device
+        // SXTmU4의 prev_id를 n9Bx2_로 변경 (새 위치)
         blocks.get_mut("SXTmU4").unwrap().attributes.insert(
             "device".to_string(),
             "7b2d08f0-59a4-4f51-b88b-1673d27a6d37".to_string()
         );
         blocks.get_mut("SXTmU4").unwrap().prev_id = Some("n9Bx2_".to_string());
+
+        // FcPUds의 prev_id도 업데이트 (SXTmU4가 빠졌으므로 UX_nxA를 가리킴)
+        blocks.get_mut("FcPUds").unwrap().prev_id = Some("UX_nxA".to_string());
 
         let sorted_after_move = ChainSorting::sort_blocks_by_chain(&blocks);
         let moved_children = sorted_after_move.get("j62VDi").unwrap();
