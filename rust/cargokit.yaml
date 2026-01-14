@@ -1,0 +1,12 @@
+# Cargokit 사전 빌드 바이너리 설정
+# 이 설정을 통해 Rust 툴체인 없이도 플러그인을 사용할 수 있습니다.
+
+precompiled_binaries:
+  # GitHub Releases에서 바이너리를 다운로드할 URL 접두사
+  url_prefix: "https://github.com/taeuk-works/appflowy_editor_sync_plugin/releases/download/"
+  # ED25519 공개키 (바이너리 서명 검증용)
+  public_key: "a7bdd70cbaf58571a40167fd91f437c8cec30660ee56ede7cce816dfcce3cfdc"
+
+cargo:
+  release:
+    toolchain: stable
