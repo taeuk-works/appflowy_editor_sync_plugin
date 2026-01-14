@@ -218,8 +218,10 @@ class DocumentServiceWrapper {
   }) async {
     try {
       await _mutex.acquire();
-      final res =
-          await _rustService.setMetaStringArray(key: key, values: values);
+      final res = await _rustService.setMetaStringArray(
+        key: key,
+        values: values,
+      );
       return Option.of(res);
     } catch (e) {
       print('Failed to set meta string array: $e');
@@ -240,8 +242,7 @@ class DocumentServiceWrapper {
   }) async {
     try {
       await _mutex.acquire();
-      final res =
-          await _rustService.pushMetaArrayItem(key: key, value: value);
+      final res = await _rustService.pushMetaArrayItem(key: key, value: value);
       return Option.of(res);
     } catch (e) {
       print('Failed to push meta array item: $e');
@@ -262,8 +263,10 @@ class DocumentServiceWrapper {
   }) async {
     try {
       await _mutex.acquire();
-      final res =
-          await _rustService.removeMetaArrayItem(key: key, value: value);
+      final res = await _rustService.removeMetaArrayItem(
+        key: key,
+        value: value,
+      );
       return Option.of(res);
     } catch (e) {
       print('Failed to remove meta array item: $e');
