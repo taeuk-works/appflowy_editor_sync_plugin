@@ -14,7 +14,7 @@ dependencies:
   easy_debounce: ^2.0.3
   flutter:
     sdk: flutter
-  flutter_rust_bridge: 2.9.0
+  flutter_rust_bridge: ^2.11.1
   fpdart: ^1.1.1
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0

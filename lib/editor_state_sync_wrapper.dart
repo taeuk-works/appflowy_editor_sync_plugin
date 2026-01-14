@@ -61,6 +61,12 @@ class EditorStateSyncWrapper {
 
   UpdateClock updateClock = UpdateClock();
 
+  /// YDoc에 직접 접근하기 위한 DocumentServiceWrapper getter
+  ///
+  /// 메타데이터 조작 등 YDoc을 직접 다뤄야 할 때 사용한다.
+  /// 주의: initAndHandleChanges() 호출 후에만 사용 가능하다.
+  DocumentServiceWrapper get documentService => docService;
+
   Future<EditorState> initAndHandleChanges() async {
     docService = await DocumentServiceWrapper.newInstance();
     initializer = DocumentInitializer(documentService: docService);
