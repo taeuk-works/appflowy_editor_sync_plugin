@@ -116,7 +116,7 @@ jobs:
 
       - name: Install Android NDK
         run: |
-          sdkmanager --install "ndk;26.1.10909125"
+          sdkmanager --install "ndk;25.2.9519653"
 
       - name: Install Cargokit dependencies
         run: |
@@ -127,6 +127,7 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.CARGOKIT_PRIVATE_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         run: |
           cd cargokit/build_tool
           dart run bin/build_tool.dart precompile-binaries \
@@ -137,8 +138,8 @@ jobs:
             --target x86_64-linux-android \
             --target i686-linux-android \
             --android-sdk-location $ANDROID_HOME \
-            --android-ndk-version 26.1.10909125 \
-            --android-min-sdk-version 19 \
+            --android-ndk-version 25.2.9519653 \
+            --android-min-sdk-version 21 \
             --verbose
 
   # ============================================================
