@@ -14,7 +14,7 @@ on:
         default: "false"
 
 env:
-  FLUTTER_VERSION: "3.27.x"
+  FLUTTER_VERSION: "3.38.6"
 
 jobs:
   # ============================================================
