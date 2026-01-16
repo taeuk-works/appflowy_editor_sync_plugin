@@ -6,6 +6,8 @@ import 'package:appflowy_editor_sync_plugin/src/rust/doc/document_types.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mutex/mutex.dart'; // Import the mutex library
 
+import '../utils/debug_print_custom.dart';
+
 // Wrapper class to handle mutex synchronization on the Dart side using the mutex library
 class DocumentServiceWrapper {
   // Use mutex library for thread-safe locking
@@ -38,7 +40,7 @@ class DocumentServiceWrapper {
     } catch (e) {
       // Handle any errors from Rust, including ConcurrentAccessError
 
-      print('Failed to apply action: $e');
+      debugPrintCustom('Failed to apply action: $e');
       return const None();
     } finally {
       // Release the mutex lock
@@ -56,7 +58,7 @@ class DocumentServiceWrapper {
     } catch (e) {
       // Handle any errors from Rust, including ConcurrentAccessError
 
-      print('Failed to set root id: $e');
+      debugPrintCustom('Failed to set root id: $e');
       return const None();
     } finally {
       // Release the mutex lock
@@ -73,7 +75,7 @@ class DocumentServiceWrapper {
       await _rustService.applyUpdates(updates: update);
       return Either.right(unit);
     } catch (e) {
-      print('Failed to apply updates: $e');
+      debugPrintCustom('Failed to apply updates: $e');
       return Either.left(Error());
     } finally {
       _mutex.release();
@@ -158,7 +160,7 @@ class DocumentServiceWrapper {
       final res = await _rustService.setMetaString(key: key, value: value);
       return Option.of(res);
     } catch (e) {
-      print('Failed to set meta string: $e');
+      debugPrintCustom('Failed to set meta string: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -179,7 +181,7 @@ class DocumentServiceWrapper {
       final res = await _rustService.setMetaInt(key: key, value: value);
       return Option.of(res);
     } catch (e) {
-      print('Failed to set meta int: $e');
+      debugPrintCustom('Failed to set meta int: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -200,7 +202,7 @@ class DocumentServiceWrapper {
       final res = await _rustService.setMetaBool(key: key, value: value);
       return Option.of(res);
     } catch (e) {
-      print('Failed to set meta bool: $e');
+      debugPrintCustom('Failed to set meta bool: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -224,7 +226,7 @@ class DocumentServiceWrapper {
       );
       return Option.of(res);
     } catch (e) {
-      print('Failed to set meta string array: $e');
+      debugPrintCustom('Failed to set meta string array: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -245,7 +247,7 @@ class DocumentServiceWrapper {
       final res = await _rustService.pushMetaArrayItem(key: key, value: value);
       return Option.of(res);
     } catch (e) {
-      print('Failed to push meta array item: $e');
+      debugPrintCustom('Failed to push meta array item: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -269,7 +271,7 @@ class DocumentServiceWrapper {
       );
       return Option.of(res);
     } catch (e) {
-      print('Failed to remove meta array item: $e');
+      debugPrintCustom('Failed to remove meta array item: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -286,7 +288,7 @@ class DocumentServiceWrapper {
       final res = await _rustService.removeMetaKey(key: key);
       return Option.of(res);
     } catch (e) {
-      print('Failed to remove meta key: $e');
+      debugPrintCustom('Failed to remove meta key: $e');
       return const None();
     } finally {
       _mutex.release();
@@ -304,7 +306,7 @@ class DocumentServiceWrapper {
       final res = await _rustService.setMetaFromJson(jsonStr: jsonStr);
       return Option.of(res);
     } catch (e) {
-      print('Failed to set meta from json: $e');
+      debugPrintCustom('Failed to set meta from json: $e');
       return const None();
     } finally {
       _mutex.release();

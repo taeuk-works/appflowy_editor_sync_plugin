@@ -182,7 +182,7 @@ class EditorStateSyncWrapper {
             updates.$2.map((e) => e.update).toList(),
       );
     } catch (e) {
-      print(e);
+      debugPrintCustom('Error applying remote updates: $e');
     }
     //Check if I have latest update // Or if it is not in
     if (!updates.$1.syncCanBeDone(updateClock)) {

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:dart_quill_delta/dart_quill_delta.dart';
 
+import '../utils/debug_print_custom.dart';
+
 String diffDeltas(String oldDelta, String newDelta) {
   try {
     final prevDelta = Delta.fromJson(jsonDecode(oldDelta) as List<dynamic>);
@@ -17,7 +19,7 @@ String diffDeltas(String oldDelta, String newDelta) {
 
     return jsonEncode(adjustedDiff.toJson());
   } catch (e) {
-    print('Error in diffDeltas: $e');
+    debugPrintCustom('Error in diffDeltas: $e');
     return '[]'; // Fallback to empty delta
   }
 }
